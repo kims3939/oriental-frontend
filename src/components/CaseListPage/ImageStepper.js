@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   img: {
-    height: 500,
+    height: '100%',
     overflow: 'hidden',
     display: 'block',
     width: '100%',
