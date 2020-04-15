@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) => ({
         padding:20
     },
     hashtag:{
-        color:'blue'
+        color:'blue',
+        cursor:'pointer'
     }
 }));
 
