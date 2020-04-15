@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core';
+import { Grid, Divider } from '@material-ui/core';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@material-ui/core';
 import { IconButton, Typography, TextField, Collapse } from '@material-ui/core';
 
@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme) => ({
     },
     expandOpen: {
       transform: 'rotate(180deg)',
+    },
+    inputComment:{
+        
     }
 }));
 
@@ -44,6 +47,7 @@ const Case = props => {
             <Card>
                 <CardHeader 
                     title={caseData.title}
+                    subheader={caseData.categories[0]}
                     action={
                         <IconButton aria-label='report'>
                             <MoreVertIcon />
@@ -75,8 +79,12 @@ const Case = props => {
                     </IconButton>
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <TextField variant='outlined' />
-                    
+                    <Divider />
+                    <Grid container direction='column'>
+                        <Grid item>
+                            <TextField className={classes.inputComment} variant='outlined' fullWidth placeholder='댓글입력'/>
+                        </Grid>
+                    </Grid>
                 </Collapse>
             </Card>
         </Grid>
