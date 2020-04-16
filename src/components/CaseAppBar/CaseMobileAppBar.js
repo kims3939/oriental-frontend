@@ -46,7 +46,7 @@ const CaseMobileAppBar = props => {
 
     return(
         <>
-            <AppBar position='sticky' color='default' elevation={0} className={classes.appBar}>
+            <AppBar position='sticky' color='transparent' elevation={0} className={classes.appBar}>
                 <Toolbar>
                     <div className={classes.left}>
                         <img className={classes.logo} src={logo} alt='logo'/>
