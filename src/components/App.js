@@ -4,8 +4,14 @@ import { Grid, Hidden } from '@material-ui/core';
 
 import CaseDesktopAppBar from './CaseAppBar/CaseDesktopAppBar';
 import CaseMobileAppBar from './CaseAppBar/CaseMobileAppBar';
+import CaseUpload from './CaseUploadPage/CaseUpload';
 
 function App() {
+  const user = {
+    username:'minwoo',
+    speciality:'student'
+  };
+
   return (
         <>
             <Hidden only={['xs']}><CaseDesktopAppBar /></Hidden>
