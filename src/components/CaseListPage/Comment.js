@@ -1,9 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardHeader, CardContent, CardActions, Avatar, Button, Divider } from '@material-ui/core';
+import { Card, CardHeader, CardContent, Avatar, Divider } from '@material-ui/core';
 
 const useStyles = makeStyles({
-
+    content:{
+        paddingTop:0,
+        paddingLeft:25
+    }
 });
 
 const Comment = props => {
@@ -16,11 +19,7 @@ const Comment = props => {
                 title={commentData.writer.username}
                 subheader={commentData.writer.speciality}
             />
-            <CardContent>{commentData.comment}</CardContent>
-            <CardActions disableSpacing>
-                <Button>Like</Button>
-                <Button>Reply</Button>
-            </CardActions>
+            <CardContent className={classes.content}>{commentData.comment}</CardContent>
             <Divider />
         </Card>
     );

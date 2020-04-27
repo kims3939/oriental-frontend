@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton, Avatar, Typography } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Avatar } from '@material-ui/core';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, ListItemAvatar } from '@material-ui/core';
 
 import logo from './logo.svg';
@@ -46,7 +46,7 @@ const CaseMobileAppBar = props => {
 
     return(
         <>
-            <AppBar position='sticky' color='transparent' elevation={0} className={classes.appBar}>
+            <AppBar position='static' color='transparent' elevation={0} className={classes.appBar}>
                 <Toolbar>
                     <div className={classes.left}>
                         <img className={classes.logo} src={logo} alt='logo'/>

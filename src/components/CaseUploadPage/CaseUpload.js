@@ -6,6 +6,7 @@ import { TextField, Chip, Button, Input, InputAdornment, IconButton, Backdrop } 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root:{
@@ -45,7 +46,7 @@ const useStyles = makeStyles({
 
 const CaseUpload = props => {
     const classes = useStyles();
-    const { user } = props;
+    const { user, history } = props;
     const [title, setTitle] = useState("");
     const [caseText, setCaseText] = useState("");
     const [categories, setCategories] = useState([]);
@@ -97,6 +98,8 @@ const CaseUpload = props => {
     };
     
     const uploadCase = imageList => {
+        if(!imageList || imageList.length < 1)
+            imageList = [];
         const formData = {
             title,
             writer:user,
@@ -112,6 +115,9 @@ const CaseUpload = props => {
             setCaseText("");
             setCategories([]);
             setImages([]);
+            
+            history.push('/');
+            
         })
         .catch( err => {
             console.log(err);
@@ -126,8 +132,7 @@ const CaseUpload = props => {
     
     return(
         <Grid container>
-            <Grid item xl={4} md={3} sm={3}></Grid>
-            <Grid item xl={4} md={6} sm={6}>
+            <Grid>
                 <Paper className={classes.root} variant='outlined'>
                     <FormGroup row>
                         <TextField 
@@ -197,7 +202,6 @@ const CaseUpload = props => {
                     </FormGroup>
                 </Paper>
             </Grid>
-            <Grid item xl={4} md={3} sm={3}></Grid>
             <Backdrop className={classes.backdrop} open={backdrop}>
                 <CircularProgress color="primary" />
             </Backdrop>
@@ -205,4 +209,4 @@ const CaseUpload = props => {
     )
 };
 
-export default CaseUpload;
+export default withRouter(CaseUpload);
