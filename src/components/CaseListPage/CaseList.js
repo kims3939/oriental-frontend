@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Grid } from '@material-ui/core';
-import Case from './Case';
+import CaseCtrl from './CaseCtrl';
 import axios from 'axios';
 
 const CaseList = props => {
     const [caseDataList, setCaseDataList] = useState([]);
     const { user } = props;
-
-    useEffect(() => {
+    const getCaseDataList = () => {
         axios.get('http://localhost:4000/api/cases')
         .then( res => {
             const { status, payload } = res.data;
@@ -17,11 +16,12 @@ const CaseList = props => {
         .catch( err => {
             console.log(err);
         });
+    };
 
-    },[]);
+    useEffect(getCaseDataList,[]);
 
     const caseList = caseDataList.map( caseData => {
-       return <Case key={caseData._id} caseData={caseData} user={user}/>
+       return <CaseCtrl key={caseData._id} caseData={caseData} user={user} getCaseDataList={getCaseDataList}/>
     });
     return(
         <Grid container direction='column' justify='space-evenly' alignItems='center' spacing={4}>

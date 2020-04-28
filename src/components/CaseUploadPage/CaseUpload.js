@@ -1,12 +1,10 @@
-import React, { useState, useRef } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, FormGroup } from '@material-ui/core';
 import { TextField, Chip, Button, Input, InputAdornment, IconButton, Backdrop } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root:{
@@ -46,84 +44,22 @@ const useStyles = makeStyles({
 
 const CaseUpload = props => {
     const classes = useStyles();
-    const { user, history } = props;
-    const [title, setTitle] = useState("");
-    const [caseText, setCaseText] = useState("");
-    const [categories, setCategories] = useState([]);
-    const [images, setImages] = useState([]);
-    const [backdrop, setBackdrop] = useState(false);
-    const uploaderEl = useRef(null);
-
-    const handleTitle = event => {
-        setTitle(event.target.value);
-    };
-
-    const handleCaseText = event => {
-        setCaseText(event.target.value);
-    };
-
-    const handleCategory = event => {
-        const value = event.target.textContent;
-        if(!value || value === "") return;
-        let categoriesSet = new Set(categories);
-        categoriesSet.add(value);
-        setCategories(Array.from(categoriesSet));
-    };
-
-    const handleDelete = (category) => () => {
-        setCategories(
-            categories.filter( element => category !== element)
-        );
-    };
-
-    const handleFile = event => {
-        const fileArr = Array.from(event.target.files);
-        setImages(images.concat(fileArr));
-    ;}
-
-    const handleDeleteFile = (imageName) => () => {
-        setImages(images.filter(image => image.name !== imageName));
-    };
-
-    const uploadImage = () => {
-        let formData = new FormData();
-        images.map( image => formData.append('images',image));
-        axios.post('http://localhost:4000/api/cases/images',formData)
-        .then( res => {
-            uploadCase(res.data);
-        })
-        .catch( err => {
-            console.log(err);
-        });
-    };
+    const {
+        title,
+        caseText,
+        categories,
+        images,
+        backdrop,
+        uploaderEl,
+        handleTitle,
+        handleCaseText,
+        handleCategory,
+        handleDelete,
+        handleFile,
+        handleDeleteFile,
+        uploadImage
+    } = props;
     
-    const uploadCase = imageList => {
-        if(!imageList || imageList.length < 1)
-            imageList = [];
-        const formData = {
-            title,
-            writer:user,
-            categories,
-            images:imageList,
-            caseText
-        };
-        setBackdrop(true);
-        axios.post('http://localhost:4000/api/cases',formData)
-        .then( res => {
-            setBackdrop(false);
-            setTitle("");
-            setCaseText("");
-            setCategories([]);
-            setImages([]);
-            
-            history.push('/');
-            
-        })
-        .catch( err => {
-            console.log(err);
-        })
-    };
-
     //category test code
     let optionList = [];
     for(let i=0; i<20; i++){
@@ -184,7 +120,7 @@ const CaseUpload = props => {
                                     disabled
                                     fullWidth
                                     variant='outlined'
-                                    value={image.name}
+                                    value={image.name || image}
                                     endAdornment={
                                         <InputAdornment>
                                             <IconButton
@@ -209,4 +145,4 @@ const CaseUpload = props => {
     )
 };
 
-export default withRouter(CaseUpload);
+export default CaseUpload;

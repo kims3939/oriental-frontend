@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactHashtag from "react-hashtag";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, Menu, MenuItem } from '@material-ui/core';
+import { Grid, Menu, MenuItem, Dialog } from '@material-ui/core';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@material-ui/core';
 import { IconButton, Typography, TextField, Collapse, Button } from '@material-ui/core';
 
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
+import CloseIcon from '@material-ui/icons/Close';
 import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
@@ -14,8 +16,8 @@ import ModeCommentIcon from '@material-ui/icons/ModeComment';
 
 import ImageStepper from './ImageStepper';
 import CommentList from './CommentList';
-
-import axios from 'axios';
+import CaseUploadCtrl from '../CaseUploadPage/CaseUploadCtrl';
+import logo from '../../components/CaseAppBar/logo.svg';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,75 +33,97 @@ const useStyles = makeStyles((theme) => ({
     hashtag:{
         color:'blue',
         cursor:'pointer'
+    },
+    logo:{
+        height:55,
+        width:55
+    },
+    left:{
+        display:'flex',
+        width:'33%',
+        justifyContent:'flex-start',
+        alignItems:'center'
+    },
+    center:{
+        display:'flex',
+        width:'33%',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    right:{
+        display:'flex',
+        width:'33%',
+        justifyContent:'flex-end',
+        alignItems:'center'
+    },
+    dialog:{
+        display:'flex'
     }
 }));
 
 const Case = props => {
     const classes = useStyles();
-    const [expanded, setExpanded] = useState(false);
-    const [reportAnchor, setReportAnchor] = useState(null);
-    const [shareAnchor, setShareAnchor] = useState(null);
-    const [comment, setComment] = useState('');
+    const { 
+        expanded,
+        setExpanded,
+        reportAnchor,
+        setReportAnchor,
+        shareAnchor,
+        setShareAnchor,
+        comment,
+        setComment,
+        like,
+        setLike,
+        dialog,
+        setDialog,
+        caseData,
+        user,
+        getCaseDataList,
+        handleExpandClick,
+        handleReportMenuOpen,
+        handleReportMenuClose,
+        handleShareMenuOpen,
+        handleShareMenuClose,
+        handleComment,
+        handleCommentSubmit,
+        handleCommentCancel,
+        handleCaseUpdate,	
+        handleCaseDelete,
+        toggleLike
+     } = props;
 
-    const { caseData, user } = props;
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-
-    const handleReportMenuOpen = event => {
-        setReportAnchor(event.currentTarget);
-    };
-
-    const handleReportMenuClose = () => {
-        setReportAnchor(null);
-    };
-
-    const handleShareMenuOpen = event => {
-        setShareAnchor(event.currentTarget);
-    };
-
-    const handleShareMenuClose = () => {
-        setShareAnchor(null);
-    };
-
-    const handleComment = event => {
-        setComment(event.target.value);
-    };
-
-    const handleCommentSubmit = () => {
-        const postData = {
-            case_id:caseData._id,
-            writer:user,
-            comment
-        };
-
-        axios.post('http://localhost:4000/api/cases/comment',postData)
-        .then( res => {
-            setComment('');
-        })
-        .catch( error => {
-            console.log(error);
-        });
-    };
-
-    const handleCommentCancel = () => {
-        setComment('');
-    };
-
-    const handleCaseUpdate = () => {
-        console.log('handle case update');
-    }
-    
-    const getCaseUpdateMenu = () => {
-        if(caseData.writer.username === user.username)
+    const getReportMenu = () => {
+        if(caseData.writer.username !== user.username)
             return(
-                <MenuItem onClick={handleCaseUpdate} dense={true}>
-                    Case Edit
+                <MenuItem onClick={handleReportMenuClose} dense={true}>
+                    Report Case
                 </MenuItem>
             )
         else
             return null;
-    }
+    };
+    
+    const getEditMenu = () => {
+        if(caseData.writer.username === user.username)
+            return(
+                <MenuItem onClick={() => handleCaseUpdate(caseData)} dense={true}>
+                    Edit
+                </MenuItem>
+            )
+        else
+            return null;
+    };
+
+    const getDeleteMenu = () => {
+        if(caseData.writer.username === user.username)
+            return(
+                <MenuItem onClick={() => handleCaseDelete(caseData)} dense={true}>
+                    Delete
+                </MenuItem>
+            )
+        else
+            return null;
+    };
 
     const getCaseImage = () => {
         if(caseData.images !== null && caseData.images.length > 0)
@@ -110,7 +134,15 @@ const Case = props => {
             )
         else
             return null;
+    };
+
+    const getLikeIcon = () => {
+        if(caseData.likers.some(liker => liker.username === user.username))
+            return <FavoriteOutlinedIcon color="secondary"/>
+        else
+            return <FavoriteBorderOutlinedIcon />
     }
+
     return(
         <Grid item className={classes.root}>
             <Card>
@@ -123,9 +155,7 @@ const Case = props => {
                         </IconButton>
                     }
                 />
-                {
-                    getCaseImage()    
-                }
+                { getCaseImage() }
                 <CardContent>
                     <Typography variant='body1'>
                         <ReactHashtag
@@ -138,8 +168,8 @@ const Case = props => {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <IconButton aria-label='favorite'>
-                        <FavoriteBorderOutlinedIcon />
+                    <IconButton aria-label='favorite' onClick={toggleLike}>
+                        { getLikeIcon()}
                     </IconButton>
                     <IconButton aria-label='share' onClick={handleShareMenuOpen}>
                         <ShareIcon />
@@ -173,12 +203,9 @@ const Case = props => {
                 getContentAnchorEl={null}
                 anchorOrigin={{vertical:'bottom', horizontal:'left'}}
             >
-                <MenuItem onClick={handleReportMenuClose} dense={true}>
-                    Report Case
-                </MenuItem>
-                {
-                    getCaseUpdateMenu()
-                }
+                { getReportMenu() }
+                { getEditMenu() }
+                { getDeleteMenu() }
             </Menu>
             <Menu
                 anchorEl={shareAnchor}
@@ -202,6 +229,20 @@ const Case = props => {
                     Copy link
                 </MenuItem>
             </Menu>
+            <Dialog open={dialog} onClose={() => {setDialog(false)}}>
+                <div className={classes.dialog}>
+                    <div className={classes.left}></div>
+                    <div className={classes.center}>
+                        <img className={classes.logo} src={logo} alt="logo"/>
+                    </div>
+                    <div className={classes.right}>
+                        <IconButton onClick={() => {setDialog(false)}}>
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
+                </div>
+                <CaseUploadCtrl caseData={caseData}/>
+            </Dialog>
         </Grid>
     )
 }
