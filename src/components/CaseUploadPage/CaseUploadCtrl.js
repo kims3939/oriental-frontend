@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import apiurl from '../../utils/apiurl';
 
 const CaseUploadCtrl = props => {
-    const { user, history, caseData, setDialog } = props;
+    const { user, history, caseData, setDialog, action } = props;
     const [title, setTitle] = useState("");
     const [caseText, setCaseText] = useState("");
     const [categories, setCategories] = useState([]);
@@ -51,25 +51,39 @@ const CaseUploadCtrl = props => {
     ;}
 
     const handleDeleteFile = (imageName) => () => {
-        setImages(images.filter(image => image.name !== imageName));
+        setImages(images.filter(image => (image.name || image) !== imageName));
     };
 
     const uploadImage = () => {
         let formData = new FormData();
-        images.map( image => formData.append('images',image));
-        axios.post(apiurl.imageUrl(),formData)
+        images.map( image => {
+            if(typeof image !== 'string')
+                formData.append('images',image)
+            else
+                formData.append('uploadedImages',image);
+        });
+        
+        let restMethod = null;
+        if(action === 'upload') restMethod = axios.post;
+        else restMethod = axios.patch;
+
+        restMethod(apiurl.imageUrl(),formData)
         .then( res => {
             uploadCase(res.data);
         })
         .catch( err => {
             console.log(err);
         });
+        
     };
     
     const uploadCase = imageList => {
         if(!imageList || imageList.length < 1)
             imageList = [];
+        
+        console.log(caseData);
         const formData = {
+            case_id:caseData._id,
             title,
             writer:user,
             categories,
@@ -77,8 +91,14 @@ const CaseUploadCtrl = props => {
             caseText
         };
         setBackdrop(true);
-        axios.post(apiurl.caseUrl(),formData)
+        
+        let restMethod = null;
+        if(action === 'upload') restMethod = axios.post;
+        else restMethod = axios.patch;
+
+        restMethod(apiurl.caseUrl(),formData)
         .then( res => {
+            console.log(res);
             setBackdrop(false);
             setTitle("");
             setCaseText("");
@@ -91,36 +111,6 @@ const CaseUploadCtrl = props => {
         .catch( err => {
             console.log(err);
         })
-    };
-
-    const removeImage = () => {
-        
-    };
-
-    const patchCase = imageList => {
-        if(!imageList || imageList.length < 1)
-            imageList = [];
-        const formData = {
-            title,
-            writer:user,
-            categories,
-            images:imageList,
-            caseText
-        };
-        setBackdrop(true);
-        axios.post(apiurl.caseUrl(),formData)
-        .then( res => {
-            setBackdrop(false);
-            setTitle("");
-            setCaseText("");
-            setCategories([]);
-            setImages([]);
-            
-            setDialog(false);
-        })
-        .catch( err => {
-            console.log(err);
-        });
     };
 
     return <CaseUpload

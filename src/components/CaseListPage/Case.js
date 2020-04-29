@@ -241,7 +241,7 @@ const Case = props => {
                         </IconButton>
                     </div>
                 </div>
-                <CaseUploadCtrl caseData={caseData}/>
+                <CaseUploadCtrl caseData={caseData} action="update"/>
             </Dialog>
         </Grid>
     )

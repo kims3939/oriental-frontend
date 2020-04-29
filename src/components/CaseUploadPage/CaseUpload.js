@@ -124,7 +124,7 @@ const CaseUpload = props => {
                                     endAdornment={
                                         <InputAdornment>
                                             <IconButton
-                                                onClick={handleDeleteFile(image.name)}
+                                                onClick={handleDeleteFile(image.name || image)}
                                             >
                                                 <CancelOutlinedIcon />
                                             </IconButton>

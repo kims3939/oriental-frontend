@@ -21,7 +21,7 @@ function App() {
                 <Grid item xl={4} lg={4} md={6} sm={12} xs={12}>
                   <Switch>
                       <Route path='/' component={() => <CaseList user={user}/>} exact={true} />
-                      <Route path='/upload' component={() => <CaseUploadCtrl user={user}/>} exact={true} />
+                      <Route path='/upload' component={() => <CaseUploadCtrl user={user} action="upload"/>} exact={true} />
                   </Switch>
                 </Grid>
                 <Grid item xl={4} lg={4} md={3}></Grid>
