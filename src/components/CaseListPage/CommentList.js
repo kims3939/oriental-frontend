@@ -3,10 +3,10 @@ import Comment from './Comment';
 import { Grid } from '@material-ui/core';
 
 const CommentList = props => {
-    const { commentListData, user } = props;
+    const { case_id, commentListData, user, getCaseDataList } = props;
     const commentList = commentListData.map( (commentData, index) => {
         return(
-            <Comment key={index} commentData={commentData} user={user}/>
+            <Comment key={index} case_id={case_id} commentData={commentData} user={user} getCaseDataList={getCaseDataList}/>
         )
     });
 

@@ -4,7 +4,7 @@ import ReactHashtag from "react-hashtag";
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Menu, MenuItem, Dialog } from '@material-ui/core';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@material-ui/core';
-import { IconButton, Typography, TextField, Collapse, Button } from '@material-ui/core';
+import { IconButton, Typography, TextField, Collapse, Button, Badge } from '@material-ui/core';
 
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
@@ -12,7 +12,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ModeCommentOutlinedIcon from '@material-ui/icons/ModeCommentOutlined';
-import ModeCommentIcon from '@material-ui/icons/ModeComment';
 
 import ImageStepper from './ImageStepper';
 import CommentList from './CommentList';
@@ -22,6 +21,9 @@ import logo from '../../components/CaseAppBar/logo.svg';
 const useStyles = makeStyles((theme) => ({
     root: {
       width: '100%'
+    },
+    caseText:{
+        whiteSpace:'pre'
     },
     media: {
       width:'100%',
@@ -58,6 +60,13 @@ const useStyles = makeStyles((theme) => ({
     },
     dialog:{
         display:'flex'
+    },
+    btnGroup:{
+        paddingTop:10,
+        paddingBottom:10
+    },
+    submitBtn:{
+        marginLeft:5
     }
 }));
 
@@ -65,15 +74,9 @@ const Case = props => {
     const classes = useStyles();
     const { 
         expanded,
-        setExpanded,
         reportAnchor,
-        setReportAnchor,
         shareAnchor,
-        setShareAnchor,
         comment,
-        setComment,
-        like,
-        setLike,
         dialog,
         setDialog,
         caseData,
@@ -143,6 +146,14 @@ const Case = props => {
             return <FavoriteBorderOutlinedIcon />
     }
 
+    const hashTagRenderer = (hashtag, action) => (
+        <span key={hashtag} className={classes.hashtag} onClick={() => action(hashtag)}>{hashtag}</span>
+    );
+
+    const handleHashTagClick = hashTag => {
+        
+    };
+
     return(
         <Grid item className={classes.root}>
             <Card>
@@ -156,12 +167,11 @@ const Case = props => {
                     }
                 />
                 { getCaseImage() }
-                <CardContent>
+                <CardContent className={classes.caseText}>
                     <Typography variant='body1'>
                         <ReactHashtag
-                            renderHashtag={ (content, index) => (
-                                <span className={classes.hashtag}>{content}</span>        
-                            )}
+                            renderHashtag={hashTagRenderer}
+                            onClick={handleHashTagClick}
                         >
                             {caseData.caseText}
                         </ReactHashtag>
@@ -175,22 +185,22 @@ const Case = props => {
                         <ShareIcon />
                     </IconButton>
                     <IconButton onClick={handleExpandClick}>
-                        {
-                            expanded ? <ModeCommentIcon /> : <ModeCommentOutlinedIcon />  
-                        }
+                        <Badge badgeContent={caseData.comments.length} color="primary">
+                            <ModeCommentOutlinedIcon />
+                        </Badge>
                     </IconButton>
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit className={classes.commentArea}>
                     <Grid container direction='column'>
                         <Grid item>
-                            <TextField className={classes.inputComment} variant='outlined' multiline={true} rows={3} fullWidth placeholder='댓글입력' onChange={handleComment} value={comment}/>
+                            <TextField variant='outlined' multiline={true} rows={3} fullWidth placeholder='댓글입력' onChange={handleComment} value={comment}/>
                         </Grid>
-                        <Grid item>        
-                            <Button onClick={handleCommentCancel}>Cancel</Button>
-                            <Button onClick={handleCommentSubmit}>Submit</Button>
+                        <Grid item className={classes.btnGroup}>        
+                            <Button variant="outlined" color="primary" onClick={handleCommentCancel}>Cancel</Button>
+                            <Button className={classes.submitBtn} variant="outlined" color="primary" onClick={handleCommentSubmit}>Submit</Button>
                         </Grid>
                         <Grid item>
-                            <CommentList commentListData={caseData.comments}/>
+                            <CommentList commentListData={caseData.comments} user={user} case_id={caseData._id} getCaseDataList={getCaseDataList}/>
                         </Grid>    
                     </Grid>
                 </Collapse>
@@ -241,7 +251,7 @@ const Case = props => {
                         </IconButton>
                     </div>
                 </div>
-                <CaseUploadCtrl caseData={caseData} action="update"/>
+                <CaseUploadCtrl caseData={caseData} setDialog={setDialog} getCaseDataList={getCaseDataList} action="update"/>
             </Dialog>
         </Grid>
     )

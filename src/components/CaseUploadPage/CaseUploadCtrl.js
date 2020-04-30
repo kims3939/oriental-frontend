@@ -6,14 +6,26 @@ import { withRouter } from 'react-router-dom';
 import apiurl from '../../utils/apiurl';
 
 const CaseUploadCtrl = props => {
-    const { user, history, caseData, setDialog, action } = props;
+    const { user, caseData, setDialog, action, getCaseDataList } = props;
     const [title, setTitle] = useState("");
     const [caseText, setCaseText] = useState("");
     const [categories, setCategories] = useState([]);
     const [images, setImages] = useState([]);
     const [backdrop, setBackdrop] = useState(false);
     const uploaderEl = useRef(null);
-
+    const categoryList = [
+        '근골격',
+        '소화기',
+        '순환기',
+        '호흡기',
+        '비뇨기',
+        '부인과',
+        '정신과',
+        '피부과',
+        '소아과',
+        '부작용'
+    ];
+    
     useEffect(()=>{
         if(caseData){
             setTitle(caseData.title);
@@ -69,7 +81,7 @@ const CaseUploadCtrl = props => {
 
         restMethod(apiurl.imageUrl(),formData)
         .then( res => {
-            uploadCase(res.data);
+            uploadCase(res.data.payload);
         })
         .catch( err => {
             console.log(err);
@@ -81,9 +93,9 @@ const CaseUploadCtrl = props => {
         if(!imageList || imageList.length < 1)
             imageList = [];
         
-        console.log(caseData);
+        const case_id = caseData ? caseData._id : null;
         const formData = {
-            case_id:caseData._id,
+            case_id,
             title,
             writer:user,
             categories,
@@ -98,14 +110,13 @@ const CaseUploadCtrl = props => {
 
         restMethod(apiurl.caseUrl(),formData)
         .then( res => {
-            console.log(res);
             setBackdrop(false);
             setTitle("");
             setCaseText("");
             setCategories([]);
             setImages([]);
-            
-            history.push('/');
+            if(setDialog) setDialog(false);
+            getCaseDataList();
             
         })
         .catch( err => {
@@ -124,6 +135,7 @@ const CaseUploadCtrl = props => {
                 backdrop={backdrop}
                 setBackdrop={setBackdrop}
                 uploaderEl={uploaderEl}
+                categoryList={categoryList}
                 handleTitle={handleTitle}
                 handleCaseText={handleCaseText}
                 handleCategory={handleCategory}

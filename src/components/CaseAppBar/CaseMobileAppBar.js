@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, Avatar } from '@material-ui/core';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, ListItemAvatar } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 import logo from './logo.svg';
 import MenuOutlinedIcon from '@material-ui/icons/MenuOutlined';
@@ -38,10 +39,39 @@ const useStyles = makeStyles({
 });
 
 const CaseMobileAppBar = props => {
+    const { history } = props;
     const classes = useStyles();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
+    };
+
+    const handleMenuClick = menu => {
+        toggleDrawer();
+        switch(menu){
+            case "home":
+                history.push('/');
+                break;
+            case "search":
+                history.push('/search');
+                break;
+            case "upload":
+                history.push('/upload');
+                break;
+            case "notify":
+                history.push('/notify');
+                break;
+            case "profile":
+                history.push('/profile');
+                break;
+            default:
+                history.push('/');
+                break;
+        };
+    };
+
+    const handleLogoClick = () => {
+        history.push('/');
     }
 
     return(
@@ -49,7 +79,7 @@ const CaseMobileAppBar = props => {
             <AppBar position='static' color='transparent' elevation={0} className={classes.appBar}>
                 <Toolbar>
                     <div className={classes.left}>
-                        <img className={classes.logo} src={logo} alt='logo'/>
+                        <img className={classes.logo} src={logo} alt='logo' onClick={handleLogoClick}/>
                     </div>
                     <div className={classes.right}>
                         <IconButton onClick={toggleDrawer}>
@@ -60,26 +90,26 @@ const CaseMobileAppBar = props => {
             </AppBar>
             <Drawer anchor='right' open={drawerOpen} onClose={toggleDrawer}>
                     <List className={classes.drawer}>
-                        <ListItem button>
+                        <ListItem button onClick={() => handleMenuClick('home')}>
                             <ListItemIcon>
                                 <HomeOutlinedIcon />
                             </ListItemIcon>
                             <ListItemText primary='Home' />
                         </ListItem>
-                        <ListItem button>
+                        <ListItem button onClick={() => handleMenuClick('search')}>
                             <ListItemIcon>
                                 <SearchOutlinedIcon />
                             </ListItemIcon>
                             <ListItemText primary='Search' />
                         </ListItem>
-                        <ListItem button>
+                        <ListItem button onClick={() => handleMenuClick('upload')}>
                             <ListItemIcon>
                                 <AddCircleOutlineRoundedIcon />
                             </ListItemIcon>
                             <ListItemText primary='Upload' />
                         </ListItem>
                         <Divider />
-                        <ListItem button>
+                        <ListItem button onClick={() => handleMenuClick('profile')}>
                             <ListItemAvatar>
                                 <Avatar className={classes.avatar}>K</Avatar>
                             </ListItemAvatar>
@@ -105,4 +135,4 @@ const CaseMobileAppBar = props => {
     );
 }
 
-export default CaseMobileAppBar;
+export default withRouter(CaseMobileAppBar);

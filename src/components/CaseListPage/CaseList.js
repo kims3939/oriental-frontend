@@ -20,9 +20,11 @@ const CaseList = props => {
 
     useEffect(getCaseDataList,[]);
 
+    
     const caseList = caseDataList.map( caseData => {
        return <CaseCtrl key={caseData._id} caseData={caseData} user={user} getCaseDataList={getCaseDataList}/>
     });
+    
     return(
         <Grid container direction='column' justify='space-evenly' alignItems='center' spacing={4}>
             {caseList}

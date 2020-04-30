@@ -1,5 +1,6 @@
 import qs from 'querystring';
-const baseUrl = 'http://localhost:4000/api';
+const hostUrl = 'http://localhost:4000';
+const baseUrl = hostUrl+'/api';
 
 const caseUrl = params => {
     if(params)
@@ -12,7 +13,7 @@ const commentUrl = params => {
     if(params)
         return baseUrl+"/cases/comment/?"+qs.stringify(params);
     else
-        return baseUrl+'/cases.comment';
+        return baseUrl+'/cases/comment';
 };
 
 const imageUrl = params => {
@@ -29,9 +30,18 @@ const likeUrl = params => {
         return baseUrl+'/cases/like';
 };
 
+const searchUrl = params => {
+    if(params)
+        return baseUrl+"/search/?"+qs.stringify(params);
+    else
+        return baseUrl+'/search';
+};
+
 export default {
+    hostUrl,
     caseUrl,
     commentUrl,
     imageUrl,
-    likeUrl
+    likeUrl,
+    searchUrl
 }

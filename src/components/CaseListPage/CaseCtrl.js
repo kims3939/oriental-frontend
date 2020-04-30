@@ -12,7 +12,7 @@ const CaseCtrl = props => {
     const [comment, setComment] = useState('');
     const [like, setLike] = useState(false);
     const [dialog, setDialog] = useState(false);
-
+    
     useEffect(() => {
         const like_ = caseData.likers.some(liker => liker.username === user.username);
         setLike(like_);
@@ -42,16 +42,17 @@ const CaseCtrl = props => {
         setComment(event.target.value);
     };
 
-    const handleCommentSubmit = () => {
+    const handleCommentSubmit = async () => {
         const postData = {
             case_id:caseData._id,
             writer:user,
             comment
         };
 
-        axios.post(apiurl.commentUrl(),postData)
+        await axios.post(apiurl.commentUrl(),postData)
         .then( res => {
             setComment('');
+            getCaseDataList();
         })
         .catch( error => {
             console.log(error);
@@ -86,7 +87,6 @@ const CaseCtrl = props => {
         };
         axios.patch(apiurl.likeUrl(), patchData)
         .then( res => {
-            console.log(res);
             getCaseDataList();
         })
         .catch( err => {

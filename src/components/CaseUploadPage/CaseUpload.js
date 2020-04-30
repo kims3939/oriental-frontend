@@ -51,6 +51,7 @@ const CaseUpload = props => {
         images,
         backdrop,
         uploaderEl,
+        categoryList,
         handleTitle,
         handleCaseText,
         handleCategory,
@@ -59,12 +60,6 @@ const CaseUpload = props => {
         handleDeleteFile,
         uploadImage
     } = props;
-    
-    //category test code
-    let optionList = [];
-    for(let i=0; i<20; i++){
-        optionList.push(`category ${i}`);
-    };
     
     return(
         <Grid container>
@@ -93,7 +88,7 @@ const CaseUpload = props => {
                         />
                         <Autocomplete 
                             className={classes.autocomplete}
-                            options={optionList}
+                            options={categoryList}
                             getOptionLabel={option => option}
                             onChange={handleCategory}
                             renderInput={

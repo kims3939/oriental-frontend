@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, Typography, Avatar } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import SearchOutlinedIcon from '@material-ui/icons/SearchOutlined';
@@ -33,39 +34,71 @@ const useStyles = makeStyles({
     logo:{
         height:55,
         width:55
+    },
+    menuItem:{
+        cursor:'pointer'
     }
 });
 
 const CaseDesktopAppBar = props => {
     const classes = useStyles();
+    const { history } = props;
+
+    const handleMenuClick = menu => {
+        switch(menu){
+            case "home":
+                history.push('/');
+                break;
+            case "search":
+                history.push('/search');
+                break;
+            case "upload":
+                history.push('/upload');
+                break;
+            case "notify":
+                history.push('/notify');
+                break;
+            case "profile":
+                history.push('/profile');
+                break;
+            default:
+                history.push('/');
+                break;
+        };
+    };
+
+    const handleLogoClick = () => {
+        history.push('/');
+    };
+
     return(
         <AppBar position='static' color='transparent' elevation={0}>
             <Toolbar>
                 <div className={classes.left}>
-                    <IconButton color='inherit'>
+                    <IconButton color='inherit' onClick={() => handleMenuClick('home')}>
                         <HomeOutlinedIcon/>
                     </IconButton>
-                    <Typography variant='subtitle1' color='inherit'>
+                    <Typography className={classes.menuItem} variant='subtitle1' color='inherit' onClick={() => handleMenuClick('home')}>
                         Home
                     </Typography>
-                    <IconButton color='inherit'>
+                    <IconButton color='inherit' onClick={() => handleMenuClick('search')}>
                         <SearchOutlinedIcon />
                     </IconButton>
-                    <Typography variant='subtitle1' color='inherit'>
+                    <Typography className={classes.menuItem} variant='subtitle1' color='inherit' onClick={() => handleMenuClick('search')}>
                         Search
                     </Typography>
                 </div>
                 <div className={classes.center}>
-                    <img className={classes.logo} src={logo} alt='logo'/>
+                    <img className={classes.logo} src={logo} alt='logo' onClick={handleLogoClick}/>
                 </div>
                 <div className={classes.right}>
-                    <IconButton color='inherit' style={{marginRight:15}}>
+                    <IconButton color='inherit' style={{marginRight:15}} onClick={() => handleMenuClick('upload')}>
                         <AddCircleOutlineRoundedIcon />
                     </IconButton>
-                    <IconButton color='inherit' style={{marginRight:20}}>
+                    <IconButton color='inherit' style={{marginRight:20}} onClick={() => handleMenuClick('notify')}>
                         <NotificationsNoneRoundedIcon />
                     </IconButton>
-                    <Avatar>
+                    <Avatar className={classes.menuItem} onClick={() => handleMenuClick('profile')}>
                         K
                     </Avatar>
                 </div>
@@ -74,4 +107,4 @@ const CaseDesktopAppBar = props => {
     );
 }
 
-export default CaseDesktopAppBar;
+export default withRouter(CaseDesktopAppBar);
