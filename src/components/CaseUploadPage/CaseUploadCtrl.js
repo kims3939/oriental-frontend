@@ -92,7 +92,7 @@ const CaseUploadCtrl = props => {
     const uploadCase = imageList => {
         if(!imageList || imageList.length < 1)
             imageList = [];
-        
+        const { history } = props;
         const case_id = caseData ? caseData._id : null;
         const formData = {
             case_id,
@@ -116,8 +116,8 @@ const CaseUploadCtrl = props => {
             setCategories([]);
             setImages([]);
             if(setDialog) setDialog(false);
-            getCaseDataList();
-            
+            if(getCaseDataList) getCaseDataList(); 
+            history.push('/');
         })
         .catch( err => {
             console.log(err);

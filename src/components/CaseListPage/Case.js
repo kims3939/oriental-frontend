@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Menu, MenuItem, Dialog } from '@material-ui/core';
 import { Card, CardHeader, CardMedia, CardContent, CardActions } from '@material-ui/core';
 import { IconButton, Typography, TextField, Collapse, Button, Badge } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@material-ui/icons/FavoriteOutlined';
@@ -92,7 +93,8 @@ const Case = props => {
         handleCommentCancel,
         handleCaseUpdate,	
         handleCaseDelete,
-        toggleLike
+        toggleLike,
+        history
      } = props;
 
     const getReportMenu = () => {
@@ -151,7 +153,10 @@ const Case = props => {
     );
 
     const handleHashTagClick = hashTag => {
-        
+        history.push({
+            pathname:'/search',
+            keyword:hashTag
+        });
     };
 
     return(
@@ -171,7 +176,7 @@ const Case = props => {
                     <Typography variant='body1'>
                         <ReactHashtag
                             renderHashtag={hashTagRenderer}
-                            onClick={handleHashTagClick}
+                            onHashtagClick={handleHashTagClick}
                         >
                             {caseData.caseText}
                         </ReactHashtag>
@@ -257,4 +262,4 @@ const Case = props => {
     )
 }
 
-export default Case;
+export default withRouter(Case);

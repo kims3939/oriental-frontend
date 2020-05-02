@@ -6,6 +6,7 @@ import axios from 'axios';
 const CaseList = props => {
     const [caseDataList, setCaseDataList] = useState([]);
     const { user } = props;
+    
     const getCaseDataList = () => {
         axios.get('http://localhost:4000/api/cases')
         .then( res => {
