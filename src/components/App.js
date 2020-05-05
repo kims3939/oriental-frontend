@@ -10,13 +10,12 @@ import { withRouter } from 'react-router-dom';
 
 function App(props) {
   const user = {
-    username:'minwoo',
-    speciality:'student'
+    username:'admin',
+    speciality:'admin'
   };
 
   const { location } = props;
   const isSearch = location.pathname === '/search';
-
   return (
         <>
             <Hidden only={['xs']}><CaseDesktopAppBar /></Hidden>
